@@ -6,6 +6,41 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
+    <?php
+    // database and object files
+    include_once "config/database.php";
+    include_once "objects/image.php";
+
+    // database connection
+    $database = new Database();
+    $conn = $database->getConnection();
+
+    if (isset($_POST['upload'])){
+      // the path top store the uploaded image
+      $target = "images" . basename($_FILES['image']['name']);
+
+      // write query
+      $query = "INSERT INTO
+                  images
+                SET
+                  name=:name, description=:description";
+
+      $stmt = $conn->prepare($query);
+
+      // posted values
+      $image = htmlspecialchars(strip_tags($_FILES['image']['name']));
+      $description = htmlspecialchars(strip_tags($_POST['description']));
+      var_dump($description);
+
+      // bind values;
+      $stmt->bindParam(':name', $image);
+      $stmt->bindParam(':description', $description);
+
+      $stmt->execute();
+    }
+
+     ?>
+
     <div class="container">
       <div class="col-md-6">
         <h1>Image uploader</h1>
