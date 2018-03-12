@@ -9,7 +9,6 @@
     <?php
     // database and object files
     include_once "config/database.php";
-    include_once "objects/image.php";
 
     // database connection
     $database = new Database();
@@ -17,7 +16,8 @@
 
     if (isset($_POST['upload'])){
       // the path top store the uploaded image
-      $target = "images" . basename($_FILES['image']['name']);
+      $target = "images/" . basename($_FILES['image']['name']);
+      $msg ="";
 
       // write query
       $query = "INSERT INTO
@@ -37,6 +37,13 @@
       $stmt->bindParam(':description', $description);
 
       $stmt->execute();
+      var_dump($_FILES['image']['tmp_name']);
+      // now, let's move uploaded file into forlder 'images'
+      if (move_uploaded_file($_FILES['image']['tmp_name'], $target)){
+        $msg = "image uploaded successfully";
+      } else {
+        $msg = "cannot upload image";
+      }
     }
 
      ?>
